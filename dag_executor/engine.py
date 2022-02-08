@@ -14,7 +14,7 @@ from .graph import Graph
 def func_wraper(name, func, data, conf):
     tic = time.time()
     logging.info('Node ' + name + ' start.')
-    result = func(data, conf)
+    result = func(name, data, conf)
     toc = time.time()
     logging.info('Node ' + name + ' finish. It took %s secs.' % str(toc - tic))
     return result
@@ -82,9 +82,9 @@ if __name__ == '__main__':
 
     tic = time.time()
     g = Graph()
-    sleep_3_op = Op('sleep_3_op', lambda x, y: logging.info(
+    sleep_3_op = Op('sleep_3_op', lambda x, y, z: logging.info(
         'Sleep 3s. ' + str(time.sleep(3))))
-    sleep_5_op = Op('sleep_5_op', lambda x, y: logging.info(
+    sleep_5_op = Op('sleep_5_op', lambda x, y, z: logging.info(
         'Sleep 5s. ' + str(time.sleep(5))))
     sleep_node_a = Node('sleep_node_a', sleep_5_op)
     sleep_node_b = Node('sleep_node_b', sleep_3_op)

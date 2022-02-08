@@ -10,10 +10,9 @@ class Op(object):
         self.func = func
 
 
-start_op = Op('start_op', lambda x, y: logging.info('Start!'))
-finish_op = Op('finish_op', lambda x, y: logging.info('Finish!'))
-join_op = Op('join_op', lambda x, y: logging.info(
-    'Join %s!' % str(y.get('node'))))
+start_op = Op('start_op', lambda x, y, z: logging.info('Start!'))
+finish_op = Op('finish_op', lambda x, y, z: logging.info('Finish!'))
+join_op = Op('join_op', lambda x, y, z: logging.info('Join %s!' % x))
 
 
 class OpManager(object):

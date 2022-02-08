@@ -141,9 +141,9 @@ if __name__ == '__main__':
     print(g)
     print(g.__dict__)
 
-    sleep_3_op = Op('sleep_3_op', lambda x, y: logging.info(
+    sleep_3_op = Op('sleep_3_op', lambda x, y, z: logging.info(
         'Sleep 3s. ' + str(time.sleep(3))))
-    sleep_5_op = Op('sleep_5_op', lambda x, y: logging.info(
+    sleep_5_op = Op('sleep_5_op', lambda x, y, z: logging.info(
         'Sleep 5s. ' + str(time.sleep(5))))
     sleep_node_a = Node('sleep_node_a', sleep_5_op)
     sleep_node_b = Node('sleep_node_b', sleep_3_op)
