@@ -29,7 +29,7 @@ class Graph(nx.DiGraph):
 
     # 添加node
     def add_node(self, node):
-        assert self._frozen == False, 'Graph has _frozen, when add node.'
+        assert self._frozen == False, 'Graph has frozen, when add node.'
         assert isinstance(node, Node), 'Input node is not Node class.'
         assert not node.name in self.node_collection, 'Node name has been in graph.'
         super().add_node(node.name)
@@ -41,7 +41,7 @@ class Graph(nx.DiGraph):
 
     # 添加edge
     def add_edge(self, node_name_a, node_name_b):
-        assert self._frozen == False, 'Graph has _frozen, when add edge.'
+        assert self._frozen == False, 'Graph has frozen, when add edge.'
         super().add_edge(node_name_a, node_name_b)
 
     def add_edges_from(self, edges):
