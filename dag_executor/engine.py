@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+import time
 from collections import OrderedDict
 from enum import Enum
 
@@ -11,9 +12,11 @@ from .graph import Graph
 
 
 def func_wraper(name, func, data, conf):
-    logging.info(name + ' start.')
+    tic = time.time()
+    logging.info('Node ' + name + ' start.')
     result = func(data, conf)
-    logging.info(name + ' finish.')
+    toc = time.time()
+    logging.info('Node ' + name + ' finish. It took %s secs.' % str(toc - tic))
     return result
 
 
@@ -75,8 +78,6 @@ class Engine(object):
 
 
 if __name__ == '__main__':
-    import time
-
     from .graph import Node, Op
 
     tic = time.time()
