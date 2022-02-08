@@ -19,7 +19,8 @@ join_op = Op('join_op', lambda x, y: logging.info(
 class OpManager(object):
     def __init__(self):
         self.op_collection = OrderedDict({
-            'start_op': start_op, 'finish_op': finish_op})
+            'start_op': start_op, 'finish_op': finish_op,
+            'join_op': join_op})
 
     def add(self, op):
         assert isinstance(op, Op), 'Input op is not Op class.'
@@ -41,3 +42,4 @@ if __name__ == '__main__':
     print(op_manager.list())
     print(op_manager.get('start_op').__dict__)
     print(op_manager.get('finish_op').__dict__)
+    print(op_manager.get('join_op').__dict__)
