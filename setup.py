@@ -15,7 +15,8 @@ setup(
     author_email="xiaowei.hu@outlook.com",
     packages=find_packages(),
     install_requires=["networkx~=2.6.3",
-                      "gevent~=1.4.0"],
+                      "greenlet~=1.1.2",
+                      "gevent~=21.12.0"],
     long_description=long_description,
     classifiers=[
         "Programming Language :: Python",
