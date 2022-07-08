@@ -8,7 +8,7 @@ except IOError:
 
 setup(
     name="dag_executor",
-    version="0.1.0",
+    version="0.1.1",
     description="a tiny DAG execution engine.",
     license="MIT",
     author="huxiaowei",

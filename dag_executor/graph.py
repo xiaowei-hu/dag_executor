@@ -20,19 +20,20 @@ start_node = Node('start_node', start_op)
 finish_node = Node('finish_node', finish_op)
 
 
-class Graph(nx.DiGraph):
+class Graph(object):
     def __init__(self, name='default'):
-        self.node_collection = OrderedDict()
+        self.g = nx.DiGraph(name=name)
         self.tr = None
+        self.node_collection = OrderedDict()
+        self.edge_collection = OrderedDict()
         self._frozen = False
-        super().__init__(name=name)
 
     # 添加node
     def add_node(self, node):
         assert self._frozen == False, 'Graph has frozen, when add node.'
         assert isinstance(node, Node), 'Input node is not Node class.'
         assert not node.name in self.node_collection, 'Node name has been in graph.'
-        super().add_node(node.name)
+        self.g.add_node(node.name)
         self.node_collection[node.name] = node
         return node.name
 
@@ -42,24 +43,28 @@ class Graph(nx.DiGraph):
     # 添加edge
     def add_edge(self, node_name_a, node_name_b):
         assert self._frozen == False, 'Graph has frozen, when add edge.'
-        super().add_edge(node_name_a, node_name_b)
+        edge_name = '__'.join([node_name_a, node_name_b])
+        assert not edge_name in self.edge_collection, 'Edge name has been in graph.'
+        self.g.add_edge(node_name_a, node_name_b)
+        self.edge_collection[edge_name] = (node_name_a, node_name_b)
+        return edge_name
 
     def add_edges_from(self, edges):
-        [self.add_edge(*edge) for edge in edges]
+        return [self.add_edge(*edge) for edge in edges]
 
     # 全部父节点
     def ancestors(self, node_name):
         if self._frozen:
             return nx.ancestors(self.tr, node_name)
         else:
-            return nx.ancestors(self, node_name)
+            return nx.ancestors(self.g, node_name)
 
     # 相邻父节点
     def in_nodes(self, node_name):
         if self._frozen:
             in_edges = self.tr.in_edges(node_name)
         else:
-            in_edges = self.in_edges(node_name)
+            in_edges = self.g.in_edges(node_name)
         return [edge[0] for edge in in_edges]
 
     # 相邻子节点
@@ -67,7 +72,7 @@ class Graph(nx.DiGraph):
         if self._frozen:
             out_edges = self.tr.out_edges(node_name)
         else:
-            out_edges = self.out_edges(node_name)
+            out_edges = self.g.out_edges(node_name)
         return [edge[1] for edge in out_edges]
 
     # 获取node对象
@@ -78,7 +83,7 @@ class Graph(nx.DiGraph):
 
     # 是否dag
     def is_dag(self):
-        return nx.is_directed_acyclic_graph(self)
+        return nx.is_directed_acyclic_graph(self.g)
 
     # 冻结graph
     def froze(self):
@@ -88,54 +93,26 @@ class Graph(nx.DiGraph):
             self.add_edge(start_node.name, node_name)
             self.add_edge(node_name, finish_node.name)
         assert self.is_dag(), 'Graph is not a dag.'
-        self.tr = nx.transitive_reduction(self)
+        self.tr = nx.transitive_reduction(self.g)
         self._frozen = True
 
     @property
     def frozen(self):
         return self._frozen
 
-    # 禁用method
-    def add_weighted_edges_from(self):
-        assert False, 'No method.'
+    @property
+    def nodes(self):
+        return self.g.nodes
 
-    def remove_node(self):
-        assert False, 'No method.'
-
-    def remove_nodes_from(self):
-        assert False, 'No method.'
-
-    def remove_edge(self):
-        assert False, 'No method.'
-
-    def remove_edges_from(self):
-        assert False, 'No method.'
-
-    def clear_edges(self):
-        assert False, 'No method.'
-
-    def clear(self):
-        assert False, 'No method.'
-
-    def update(self):
-        assert False, 'No method.'
-
-    def copy(self):
-        assert False, 'No method.'
-
-    def reverse(self):
-        assert False, 'No method.'
-
-    def to_directed(self):
-        assert False, 'No method.'
-
-    def to_undirected(self):
-        assert False, 'No method.'
+    @property
+    def edges(self):
+        return self.g.edges
 
 
 if __name__ == '__main__':
     import logging
     import time
+
     g = Graph()
     print(id(g))
     print(g)
@@ -155,6 +132,7 @@ if __name__ == '__main__':
 
     print(g.nodes)
     print(g.edges)
+    print(g.tr.nodes)
     print(g.tr.edges)
 
     for node_name in g.nodes:
