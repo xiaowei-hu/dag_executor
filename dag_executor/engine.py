@@ -11,13 +11,12 @@ from gevent import pool
 from .graph import Graph
 
 
-def func_wraper(name, func, data, conf):
+def func_wraper(func, name, data, conf):
     tic = time.time()
     logging.info('Node ' + name + ' start.')
-    result = func(name, data, conf)
+    func(name, data, conf)
     toc = time.time()
     logging.info('Node ' + name + ' finish. It took %s secs.' % str(toc - tic))
-    return result
 
 
 class RunStatus(Enum):
@@ -33,9 +32,11 @@ class Engine(object):
 
     def submit(self, node, data):
         name = node.name
-        func = node.op.func
         conf = node.conf
-        return self.p.spawn(func_wraper, name, func, data, conf)
+
+        def func(name, data, conf):
+            node.op.func(name, data, conf)
+        return self.p.spawn(func_wraper, func, name, data, conf)
 
     def eval(self, g, data=OrderedDict(), timeout=None):
         assert isinstance(g, Graph), 'Input g is not Graph class.'
