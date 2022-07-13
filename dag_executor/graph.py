@@ -9,11 +9,12 @@ from .op_manager import Op, finish_op, start_op
 
 
 class Node(object):
-    def __init__(self, name, op, conf=None):
+    def __init__(self, name, op, conf=None, timeout=None):
         assert isinstance(op, Op), 'Input op is not Op class.'
         self.name = name
         self.op = op
         self.conf = conf
+        self.timeout = timeout
 
 
 start_node = Node('start_node', start_op)

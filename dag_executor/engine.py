@@ -33,9 +33,11 @@ class Engine(object):
     def submit(self, node, data):
         name = node.name
         conf = node.conf
+        timeout = node.timeout
 
         def func(name, data, conf):
-            node.op.func(name, data, conf)
+            with gevent.Timeout(timeout, TimeoutError(name)):
+                node.op.func(name, data, conf)
         return self.p.spawn(func_wraper, func, name, data, conf)
 
     def eval(self, g, data=OrderedDict(), timeout=None):
@@ -88,7 +90,7 @@ if __name__ == '__main__':
     sleep_5_op = Op('sleep_5_op', lambda x, y, z: logging.info(
         'Sleep 5s. ' + str(time.sleep(5))))
     sleep_node_a = Node('sleep_node_a', sleep_5_op)
-    sleep_node_b = Node('sleep_node_b', sleep_3_op)
+    sleep_node_b = Node('sleep_node_b', sleep_3_op, timeout=2.5)
     sleep_node_c = Node('sleep_node_c', sleep_3_op)
     g.add_nodes_from([sleep_node_a, sleep_node_b, sleep_node_c])
     g.add_edges_from([(sleep_node_b.name, sleep_node_c.name)])
